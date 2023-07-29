@@ -410,7 +410,27 @@ void RenderTarget::draw(const Vertex* vertices, std::size_t vertexCount, Primiti
     }
 }
 
+////////////////////////////////////////////////////////////
+void RenderTarget::draw(const Vert3DBuffer& vertBuffer, const RenderStates& states)
+{
+    if (RenderTargetImpl::isActive(m_id) || setActive(true))
+    {
+        setupDraw(false, states);
 
+        Vert3DBuffer::bind(&vertBuffer);
+
+        drawPrimitives(vertBuffer.getPrimitiveType(), 0, vertBuffer.getVertexCount());
+
+        // Unbind vertex buffer
+        Vert3DBuffer::bind(nullptr);
+
+        cleanupDraw(states);
+
+        // Update the cache
+        m_cache.useVertexCache        = false;
+        m_cache.texCoordsArrayEnabled = true;
+    }
+}
 ////////////////////////////////////////////////////////////
 void RenderTarget::draw(const VertexBuffer& vertexBuffer, const RenderStates& states)
 {

@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/GLCheck.hpp>
 #include <SFML/Graphics/GLExtensions.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -359,6 +360,106 @@ void VertexBuffer::draw(RenderTarget& target, const RenderStates& states) const
 void swap(VertexBuffer& left, VertexBuffer& right) noexcept
 {
     left.swap(right);
+}
+
+
+
+Vert3DBuffer::Vert3DBuffer(const PrimitiveType& primitiveType) :
+    m_Vao(0),
+    m_Vbo(0),
+    m_size(0),
+    m_primitiveType(primitiveType)
+{
+
+}
+
+Vert3DBuffer::~Vert3DBuffer()
+{
+    const TransientContextLock contextLock;
+
+    if( m_Vao )
+    {
+        GLEXT_glDeleteVertexArrays(1, &m_Vao);
+    }
+
+    if( m_Vbo )
+    {
+        GLEXT_glDeleteBuffers(1, &m_Vbo);
+    }
+}
+
+bool Vert3DBuffer::create(std::vector<Vert3D> vertices)
+{
+    m_size = vertices.size();
+
+
+    const TransientContextLock contextLock;
+
+    // generate and bind vertex array object
+    glCheck(GLEXT_glGenVertexArrays(1, &m_Vao));
+    glCheck(GLEXT_glBindVertexArray(m_Vao));
+
+    // generate vertex buffer
+    glCheck(GLEXT_glGenBuffers(1, &m_Vbo));
+    glCheck(GLEXT_glBindBuffer(GLEXT_GL_ARRAY_BUFFER, m_Vbo));
+    glCheck(GLEXT_glBufferData(GLEXT_GL_ARRAY_BUFFER,
+                               static_cast<GLsizeiptrARB>(sizeof(Vert3D) * vertices.size()),
+                               vertices.data(),
+                               GLEXT_GL_STATIC_DRAW));
+
+    // shader attribute layout
+
+    // position attribute
+    glCheck(GLEXT_glEnableVertexAttribArray(0));
+    glCheck(
+        GLEXT_glVertexAttribPointer(0, // attribute index (positions = 0)
+                                    3, // a position will have 3 components
+                                    GL_FLOAT, // each component is a float
+                                    GL_FALSE, // values SHOULD NOT be normalize
+                                    sizeof(Vert3D), // Offset between consecutive indices, simply the size of a Vert3D
+                                    (GLvoid*)0)); // the component's offset from the beginning of the vertex, position is first so offset = 0
+    // normal attribute
+    glCheck(GLEXT_glEnableVertexAttribArray(1));
+    glCheck(
+        GLEXT_glVertexAttribPointer(1, // attribute index (normals = 1)
+                                    3, // a normal will have 3 components
+                                    GL_FLOAT, // each component is a float
+                                    GL_FALSE, // values SHOULD NOT be normalize
+                                    sizeof(Vert3D), // Offset between consecutive indices, simply the size of a Vert3D
+                                    (GLvoid*)(sizeof(sf::Vector3f)))); // the component's offset from the beginning of the vertex, normal after vec3 position so offset = sizeof( vec3 )
+
+
+    // unbind all buffer and vertex array
+    glCheck(GLEXT_glBindBuffer(GLEXT_GL_ARRAY_BUFFER, 0));
+    glCheck(GLEXT_glBindVertexArray(0));
+
+    return true;
+}
+void Vert3DBuffer::draw(RenderTarget& target, const RenderStates& states) const
+{
+    if (m_size)
+        target.draw(*this, states);
+}
+
+void Vert3DBuffer::bind(const Vert3DBuffer* vertBuffer)
+{
+    const TransientContextLock lock;
+
+    glCheck(GLEXT_glBindVertexArray(vertBuffer ? vertBuffer->m_Vao : 0));
+}
+
+std::size_t Vert3DBuffer::getVertexCount() const
+{
+    return m_size;
+}
+
+void Vert3DBuffer::setPrimitiveType(PrimitiveType type)
+{
+    m_primitiveType = type;
+}
+PrimitiveType Vert3DBuffer::getPrimitiveType() const
+{
+    return m_primitiveType;
 }
 
 } // namespace sf

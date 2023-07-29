@@ -314,6 +314,14 @@
 #define GLEXT_geometry_shader4                    SF_GLAD_GL_ARB_geometry_shader4
 #define GLEXT_GL_GEOMETRY_SHADER                  GL_GEOMETRY_SHADER_ARB
 
+// Alex's additions
+#define GLEXT_glGenVertexArrays                   glGenVertexArrays
+#define GLEXT_glDeleteVertexArrays                glDeleteVertexArrays
+#define GLEXT_glBindVertexArray                   glBindVertexArray
+#define GLEXT_glEnableVertexAttribArray           glEnableVertexAttribArray
+#define GLEXT_glVertexAttribPointer               glVertexAttribPointer
+
+
 #endif
 
 // OpenGL Versions
