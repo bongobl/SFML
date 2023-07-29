@@ -52,6 +52,7 @@ namespace sf
 class Drawable;
 class Shader;
 class Texture;
+class Vert3DBuffer;
 class Transform;
 class VertexBuffer;
 
@@ -321,6 +322,8 @@ public:
               PrimitiveType       type,
               const RenderStates& states = RenderStates::Default);
 
+
+    void draw(const Vert3DBuffer& vertBuffer, const RenderStates& states = RenderStates::Default);
     ////////////////////////////////////////////////////////////
     /// \brief Draw primitives defined by a vertex buffer
     ///

@@ -349,6 +349,36 @@ private:
 ////////////////////////////////////////////////////////////
 SFML_GRAPHICS_API void swap(VertexBuffer& left, VertexBuffer& right) noexcept;
 
+struct Vert3D
+{
+
+    Vector3f m_Position;
+    Vector3f m_Normal;
+    //bool operator<( const Vert3D& other ) const;
+};
+
+class Vert3DBuffer : public Drawable, private GlResource
+{
+    unsigned int m_Vao;
+    unsigned int m_Vbo;
+
+    PrimitiveType m_primitiveType;
+    std::size_t m_size;
+
+public:
+    Vert3DBuffer(const PrimitiveType& primitiveType = PrimitiveType::Triangles);
+    ~Vert3DBuffer();
+
+    [[nodiscard]] bool create(std::vector<Vert3D> vertices);
+    void draw(RenderTarget& target, const RenderStates& states) const override;
+
+    static void bind(const Vert3DBuffer* vertBuffer);
+
+    void setPrimitiveType(PrimitiveType type);
+    PrimitiveType getPrimitiveType() const;
+    std::size_t getVertexCount() const;
+};
+
 } // namespace sf
 
 
