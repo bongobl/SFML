@@ -209,7 +209,7 @@ void RenderTarget::clear(const Color& color)
             applyCurrentView();
 
         glCheck(glClearColor(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f));
-        glCheck(glClear(GL_COLOR_BUFFER_BIT));
+        glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     }
 }
 
@@ -620,7 +620,7 @@ void RenderTarget::resetGLStates()
         glCheck(glDisable(GL_CULL_FACE));
         glCheck(glDisable(GL_LIGHTING));
         glCheck(glDisable(GL_STENCIL_TEST));
-        glCheck(glDisable(GL_DEPTH_TEST));
+        glCheck(glEnable(GL_DEPTH_TEST));
         glCheck(glDisable(GL_ALPHA_TEST));
         glCheck(glDisable(GL_SCISSOR_TEST));
         glCheck(glEnable(GL_TEXTURE_2D));
