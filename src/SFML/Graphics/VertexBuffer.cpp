@@ -431,7 +431,7 @@ bool Vert3DBuffer::create(std::vector<Vert3D> vertices)
 
     return true;
 }
-void Vert3DBuffer::draw(RenderTarget& target, const RenderStates& states) const
+void Vert3DBuffer::draw(RenderTarget& target, RenderStates states) const
 {
     if (m_size)
         target.draw(*this, states);

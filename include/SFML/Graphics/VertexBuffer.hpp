@@ -35,6 +35,7 @@
 
 #include <SFML/Window/GlResource.hpp>
 
+#include <vector>
 #include <cstddef>
 
 
@@ -370,7 +371,7 @@ public:
     ~Vert3DBuffer();
 
     [[nodiscard]] bool create(std::vector<Vert3D> vertices);
-    void draw(RenderTarget& target, const RenderStates& states) const override;
+    void draw(RenderTarget& target, RenderStates states) const override;
 
     static void bind(const Vert3DBuffer* vertBuffer);
 
